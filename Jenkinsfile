@@ -32,13 +32,17 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                build job: "catalogue-deploy", wait: true, parameters: [string(name: 'version',value: "${packageVersion}"),
-                    booleanParam(name: 'environment',value: "dev")
-                ]
+                script {
+                        def params = [
+                            string(name: 'version',value: "${packageVersion}"),
+                            booleanParam(name: 'environment',value: "dev")
+                        ]
+                build job: "catalogue-deploy", wait: true, parameters: params
                 
-            }
-        }   
+               }
+           }   
         
+        }
     }
     // post build
     post { 
