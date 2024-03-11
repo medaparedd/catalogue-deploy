@@ -29,6 +29,42 @@ pipeline {
                 """
             }
         }
+        stage('Init') {
+            steps {
+                sh """
+                    cd terraform
+                    terraform init --backend-config=${params.environment}/backend.tf -reconfigure
+                """
+            }
+        }
+
+        stage('Plan') {
+            when{
+                expression{
+                    params.Create
+                }
+            }
+            steps {
+                sh """
+                    cd terraform
+                    terraform plan -var-file=${params.environment}/${params.environment}.tfvars -var="app_version=${params.version}"
+                """
+            }
+        }
+
+        stage('Apply') {
+            when{
+                expression{
+                    params.Create
+                }
+            }
+            steps {
+                sh """
+                    cd terraform
+                    terraform apply -var-file=${params.environment}/${params.environment}.tfvars -var="app_version=${params.version}" -auto-approve
+                """
+            }
+        }
 
         
     }
