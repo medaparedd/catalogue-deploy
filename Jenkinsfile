@@ -4,18 +4,18 @@ pipeline {
             label 'AGENT-1'
         }
     }
-     environment { 
-        packageVersion = ''
-        nexusURL = '172.31.15.118:8081'
-    }
+    //  environment { 
+    //     packageVersion = ''
+    //     nexusURL = '172.31.15.118:8081'
+    // }
     options {
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
     parameters {
-        string(name: 'version', defaultValue: '', description: 'What is the artifact version?')
-        string(name: 'environment', defaultValue: '', description: 'What is environment?')
+        string(name: 'version', defaultValue: '1.0.0', description: 'What is the artifact version?')
+        string(name: 'environment', defaultValue: 'dev', description: 'What is environment?')
         // booleanParam(name: 'Destroy', defaultValue: 'false', description: 'What is Destroy?')
         // booleanParam(name: 'Create', defaultValue: 'false', description: 'What is Create?')
     }
@@ -30,19 +30,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                        def params = [
-                            string(name: 'version', value: "${packageVersion}"),
-                            booleanParam(name: 'environment', value: "dev")
-                        ]
-                build job: "catalogue-deploy", wait: true, parameters: params
-                
-               }
-           }   
         
-        }
     }
     // post build
     post { 
